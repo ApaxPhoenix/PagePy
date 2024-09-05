@@ -95,11 +95,6 @@ class Direction(Enum):
     GRID_ROWS = "grid-rows"
     GRID_DENSE = "grid-dense"
 
-class FlexWrap(Enum):
-    NOWRAP = "nowrap"
-    WRAP = "wrap"
-    WRAP_REVERSE = "wrap-reverse"
-
 class AlignContent(Enum):
     FLEX_START = "flex-start"
     FLEX_END = "flex-end"
@@ -137,7 +132,6 @@ class BaseElement:
         align_items: Optional[AlignItems] = None,
         overflow: Optional[Overflow] = None,
         direction: Optional[Direction] = None,
-        flex_wrap: Optional[FlexWrap] = None,
         align_content: Optional[AlignContent] = None
     ):
         """
@@ -156,7 +150,6 @@ class BaseElement:
             align_items (Optional[AlignItems]): The CSS align-items property.
             overflow (Optional[Overflow]): The CSS overflow property.
             direction (Optional[Direction]): The CSS flex-direction or grid property.
-            flex_wrap (Optional[FlexWrap]): The CSS flex-wrap property.
             align_content (Optional[AlignContent]): The CSS align-content property.
         """
         self.tag = tag
@@ -194,8 +187,6 @@ class BaseElement:
             self.styles["align-items"] = align_items.value
         if overflow and self.tag in self.block_elements:
             self.styles["overflow"] = overflow.value
-        if flex_wrap and self.styles.get("display") in {"flex", "inline-flex"}:
-            self.styles["flex-wrap"] = flex_wrap.value
         if align_content and self.styles.get("display") in {"flex", "grid", "inline-flex", "inline-grid"}:
             self.styles["align-content"] = align_content.value
 
@@ -259,26 +250,3 @@ class BaseElement:
             str: A string representing this element.
         """
         return f"BaseElement(tag='{self.tag}')"
-
-# Example usage
-flex_container = BaseElement(
-    "div",
-    BaseElement("h1", "Welcome"),
-    BaseElement("p", "This is a flex container."),
-    direction=Direction.FLEX_COLUMN,
-    justify_content=JustifyContent.CENTER,
-    align_items=AlignItems.CENTER,
-    flex_wrap=FlexWrap.WRAP,
-    align_content=AlignContent.SPACE_AROUND
-)
-
-grid_container = BaseElement(
-    "div",
-    BaseElement("div", "Grid Item 1"),
-    BaseElement("div", "Grid Item 2"),
-    direction=Direction.GRID_COLS,
-    display=Display.GRID
-)
-
-print(flex_container)
-print(grid_container)
