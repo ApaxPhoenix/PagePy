@@ -1,7 +1,8 @@
-from typing import Union, List, Optional, Dict
+from typing import List, Union, Optional, Dict
 from enum import Enum
+from lxml import etree
+import html
 
-# Define the Enums
 class Position(Enum):
     STATIC = "static"
     RELATIVE = "relative"
@@ -65,6 +66,8 @@ class Size(Enum):
     THIRD = "33%"
     QUARTER = "25%"
     ZERO = "0"
+    PX_10 = "10px"
+    PX_20 = "20px"
     PX_50 = "50px"
     PX_100 = "100px"
     PX_200 = "200px"
@@ -79,14 +82,10 @@ class Size(Enum):
     VH_100 = "100vh"
 
 class BaseElement:
-    """
-    A base class for HTML elements with optional CSS styling, class, and id attributes.
-    """
-
     def __init__(
         self,
         tag: str,
-        *children: Union['BaseElement', str],
+        children: Optional[List[Union["BaseElement", str]]] = None,
         position: Optional[Position] = None,
         display: Optional[Display] = None,
         text_align: Optional[TextAlign] = None,
@@ -103,123 +102,144 @@ class BaseElement:
         min_height: Optional[Union[Size, str, int, float]] = None,
         class_name: Optional[str] = None,
         element_id: Optional[str] = None,
-        stylesheet: Optional[Dict[str, str]] = None,
+        style: Optional[Dict[str, str]] = None,
         href: Optional[str] = None,
         type: Optional[str] = None
     ) -> None:
         """
-        Initialize a new HTML element with optional CSS styles, class, and id attributes.
-        """
-        self.tag = tag
-        self.class_name = class_name
-        self.element_id = element_id
-        self.children: List[Union['BaseElement', str]] = list(children)
-        self.styles = stylesheet if stylesheet else {}
-        self.href = href
-        self.type = type
+        Initializes a BaseElement with optional styling and children elements.
 
-        # Optional CSS styles based on the type of element
-        if position:
-            self.styles["position"] = position.value
-        if display:
-            self.styles["display"] = display.value
-        if text_align and self.tag in {"div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "table", "form", "header", "footer", "main", "section", "article", "aside", "nav", "figure", "figcaption", "dialog", "details", "summary", "fieldset"}:
-            self.styles["text-align"] = text_align.value
-        if vertical_align and self.tag in {"span", "a", "strong", "em", "b", "i", "img", "br", "input", "label", "textarea", "button", "select", "option", "small", "sub", "sup"}:
-            self.styles["vertical-align"] = vertical_align.value
-        if z_index:
-            self.styles["z-index"] = z_index.value
+        Args:
+            tag (str): HTML tag name.
+            children (Optional[List[Union["BaseElement", str]]]): Child elements or text.
+            position (Optional[Position]): CSS position property.
+            display (Optional[Display]): CSS display property.
+            text_align (Optional[TextAlign]): CSS text-align property.
+            vertical_align (Optional[VerticalAlign]): CSS vertical-align property.
+            z_index (Optional[ZIndex]): CSS z-index property.
+            margin (Optional[Union[Size, str, int, float]]): CSS margin property.
+            padding (Optional[Union[Size, str, int, float]]): CSS padding property.
+            overflow (Optional[Overflow]): CSS overflow property.
+            width (Optional[Union[Size, str, int, float]]): CSS width property.
+            height (Optional[Union[Size, str, int, float]]): CSS height property.
+            max_width (Optional[Union[Size, str, int, float]]): CSS max-width property.
+            max_height (Optional[Union[Size, str, int, float]]): CSS max-height property.
+            min_width (Optional[Union[Size, str, int, float]]): CSS min-width property.
+            min_height (Optional[Union[Size, str, int, float]]): CSS min-height property.
+            class_name (Optional[str]): CSS class attribute.
+            element_id (Optional[str]): HTML id attribute.
+            style (Optional[Dict[str, str]]): Additional inline styles.
+            href (Optional[str]): Hyperlink reference.
+            type (Optional[str]): Input type attribute.
+        """
+        self.tag: str = tag
+        self.class_name: Optional[str] = class_name
+        self.element_id: Optional[str] = element_id
+        self.href: Optional[str] = href
+        self.type: Optional[str] = type
+        self.children: List[Union["BaseElement", str]] = children if children else []
+
+        # Initialize styles dictionary
+        self.styles: Dict[str, str] = style if style else {}
+
+        # Add CSS styles directly
+        if position: self.styles["position"] = position.value
+        if display: self.styles["display"] = display.value
+        if text_align: self.styles["text-align"] = text_align.value
+        if vertical_align: self.styles["vertical-align"] = vertical_align.value
+        if z_index: self.styles["z-index"] = z_index.value
+
+        # Handle margin, padding, width, height, max-width, max-height, min-width, min-height
         if margin:
-            self.styles["margin"] = margin if isinstance(margin, str) else f"{margin}px"
+            self.styles["margin"] = (margin.value if isinstance(margin, Size)
+                                    else f"{margin}px" if isinstance(margin, (int, float))
+                                    else margin)
         if padding:
-            self.styles["padding"] = padding if isinstance(padding, str) else f"{padding}px"
-        if overflow and self.tag in {"div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "ul", "ol", "table", "form", "header", "footer", "main", "section", "article", "aside", "nav", "figure", "figcaption", "dialog", "details", "summary", "fieldset"}:
-            self.styles["overflow"] = overflow.value
-        if width is not None:
-            self.styles["width"] = width.value if isinstance(width, Size) else f"{width}px"
-        if height is not None:
-            self.styles["height"] = height.value if isinstance(height, Size) else f"{height}px"
-        if max_width is not None:
-            self.styles["max-width"] = max_width.value if isinstance(max_width, Size) else f"{max_width}px"
-        if max_height is not None:
-            self.styles["max-height"] = max_height.value if isinstance(max_height, Size) else f"{max_height}px"
-        if min_width is not None:
-            self.styles["min-width"] = min_width.value if isinstance(min_width, Size) else f"{min_width}px"
-        if min_height is not None:
-            self.styles["min-height"] = min_height.value if isinstance(min_height, Size) else f"{min_height}px"
+            self.styles["padding"] = (padding.value if isinstance(padding, Size)
+                                     else f"{padding}px" if isinstance(padding, (int, float))
+                                     else padding)
+        if overflow: self.styles["overflow"] = overflow.value
+        if width:
+            self.styles["width"] = (width.value if isinstance(width, Size)
+                                   else f"{width}px" if isinstance(width, (int, float))
+                                   else width)
+        if height:
+            self.styles["height"] = (height.value if isinstance(height, Size)
+                                    else f"{height}px" if isinstance(height, (int, float))
+                                    else height)
+        if max_width:
+            self.styles["max-width"] = (max_width.value if isinstance(max_width, Size)
+                                        else f"{max_width}px" if isinstance(max_width, (int, float))
+                                        else max_width)
+        if max_height:
+            self.styles["max-height"] = (max_height.value if isinstance(max_height, Size)
+                                         else f"{max_height}px" if isinstance(max_height, (int, float))
+                                         else max_height)
+        if min_width:
+            self.styles["min-width"] = (min_width.value if isinstance(min_width, Size)
+                                        else f"{min_width}px" if isinstance(min_width, (int, float))
+                                        else min_width)
+        if min_height:
+            self.styles["min-height"] = (min_height.value if isinstance(min_height, Size)
+                                         else f"{min_height}px" if isinstance(min_height, (int, float))
+                                         else min_height)
 
-    def render(self) -> str:
+    def __str__(self) -> str:
         """
-        Renders the HTML element and its children as a string.
+        Converts the BaseElement to a pretty-printed HTML string.
+
+        Returns:
+            str: Pretty-printed HTML representation of the element.
         """
-        attrs: List[str] = []
-        if self.class_name:
-            attrs.append(f'class="{self.class_name}"')
-        if self.element_id:
-            attrs.append(f'id="{self.element_id}"')
+        lxml_element = etree.Element(self.tag)
+
+        # Set attributes
+        if self.class_name: lxml_element.set("class", self.class_name)
+        if self.element_id: lxml_element.set("id", self.element_id)
+        if self.href: lxml_element.set("href", self.href)
+        if self.type: lxml_element.set("type", self.type)
+
+        # Add style attributes
         if self.styles:
-            style = "; ".join(f"{k}: {v}" for k, v in self.styles.items())
-            attrs.append(f'style="{style}"')
-        if self.href:
-            attrs.append(f'href="{self.href}"')
-        if self.type:
-            attrs.append(f'type="{self.type}"')
+            style_string = "; ".join(f"{html.escape(key)}: {html.escape(value)}" for key, value in self.styles.items())
+            lxml_element.set("style", style_string)
 
-        attr_str = " ".join(attrs)
+        # Append children
+        for child in self.children:
+            if isinstance(child, BaseElement):
+                child_element = etree.fromstring(str(child))
+                lxml_element.append(child_element)
+            else:
+                lxml_element.text = (lxml_element.text or "") + html.escape(str(child))
 
-        opening_tag = f"<{self.tag} {attr_str.strip()}>" if attr_str else f"<{self.tag}>"
-        closing_tag = f"</{self.tag}>"
+        # Convert to HTML string
+        html_string = etree.tostring(lxml_element, method="html", encoding="unicode")
 
-        children_html = "".join(child.render() if isinstance(child, BaseElement) else child for child in self.children)
-        return f"{opening_tag}{children_html}{closing_tag}"
+        # Parse and pretty-print HTML
+        html_parser = etree.HTMLParser(remove_blank_text=True)
+        document = etree.fromstring(html_string, parser=html_parser)
+        indented_html = etree.tostring(document, pretty_print=True, encoding="unicode")
+
+        return indented_html
 
 # Example usage
-if __name__ == "__main__":
-    header = BaseElement(
-        "header",
-        BaseElement(
-            "h1",
-            "Welcome to My Website",
-            text_align=TextAlign.CENTER
-        ),
-        BaseElement(
-            "nav",
-            BaseElement(
-                "ul",
-                BaseElement("li", "Home", display=Display.INLINE),
-                BaseElement("li", "About", display=Display.INLINE),
-                BaseElement("li", "Contact", display=Display.INLINE),
-            ),
-        ),
-        position=Position.STATIC,
-        display=Display.BLOCK,
-        class_name="main-header",
-        element_id="header1"
-    )
+child1 = BaseElement(tag="p", children=["This is a paragraph."])
+child2 = BaseElement(tag="div", children=["This is a div."])
 
-    link = BaseElement(
-        "a",
-        "Click here to learn more",
-        href="https://example.com",
-        display=Display.INLINE
-    )
+element = BaseElement(
+    tag="div",
+    children=[child1, child2, "Some text here."],
+    position=Position.RELATIVE,
+    display=Display.BLOCK,
+    text_align=TextAlign.CENTER,
+    margin=Size.PX_20,
+    padding=Size.PX_10,
+    overflow=Overflow.AUTO,
+    width=Size.FULL,
+    height=Size.AUTO,
+    class_name="container",
+    element_id="main-container",
+    style={"background-color": "lightgrey"}
+)
 
-    form = BaseElement(
-        "form",
-        BaseElement("label", "Name: ", BaseElement("input", type="text")),
-        BaseElement("label", "Email: ", BaseElement("input", type="email")),
-        BaseElement("button", "Submit", type="submit"),
-        display=Display.FLEX
-    )
-
-    footer = BaseElement(
-        "footer",
-        BaseElement("p", "© 2024 My Website", text_align=TextAlign.CENTER),
-        BaseElement("p", "Follow us on ", link, text_align=TextAlign.CENTER),
-        class_name="main-footer",
-        element_id="footer1"
-    )
-
-    print(header.render())
-    print(form.render())
-    print(footer.render())
+print(element)
