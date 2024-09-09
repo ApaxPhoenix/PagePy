@@ -183,6 +183,14 @@ class BaseElement:
             self.styles["min-height"] = (min_height.value if isinstance(min_height, Size)
                                          else f"{min_height}px" if isinstance(min_height, (int, float))
                                          else min_height)
+    def __repr__(self) -> str:
+        """
+        Return a string representation of this element for debugging.
+
+        Returns:
+            str: A string representing this element.
+        """
+        return f"BaseElement(tag='{self.tag}')"
 
     def __str__(self) -> str:
         """
