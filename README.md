@@ -29,12 +29,12 @@ Create a Python file (e.g., `app.py`) and start coding:
 ```python
 from pagepy import Html, Head, Body, Div, H1, P
 
-# Create an HTML structure
+
 html = Html(
     children=[
         Head(
             children=[
-                BaseElement("title", children=["My PagePy Website"])
+                BaseElement("title", children=["My Simple Webpage"])
             ]
         ),
         Body(
@@ -42,23 +42,43 @@ html = Html(
                 Div(
                     class_name="header",
                     children=[
-                        H1(children=["Welcome to PagePy"], style={"text-align": "center"})
+                        H1(children=["Welcome to My Webpage"], style={"text-align": "center"})
                     ],
                     style={"background-color": "#f0f0f0", "padding": "20px"}
                 ),
                 Div(
                     class_name="content",
                     children=[
-                        P(children=["Build web pages easily with PagePy!"])
+                        P(children=["This is a paragraph in the main content area."]),
+                        Ul(
+                            children=[
+                                Li(children=["First item"]),
+                                Li(children=["Second item"]),
+                                Li(children=["Third item"])
+                            ]
+                        ),
                     ],
                     style={"margin": "20px", "padding": "20px", "border": "1px solid #ddd"}
+                ),
+                Div(
+                    class_name="footer",
+                    children=[
+                        P(children=["© 2024 My Simple Webpage"], style={"text-align": "center"})
+                    ],
+                    style={
+                        "background-color": "#f0f0f0",
+                        "padding": "10px",
+                        "position": "fixed",
+                        "bottom": "0",
+                        "width": "100%"
+                    }
                 )
             ]
         )
     ]
 )
 
-# Generate the HTML
+# Print the resulting HTML
 print(html)
 ```
 
