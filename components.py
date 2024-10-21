@@ -1,236 +1,261 @@
-from typing import List, Union, Optional, Dict
-from core import BaseElement
+from core import Element
 
 # Structure Elements
-class Html(BaseElement):
+class Html(Element):
+    """Root element of an HTML document"""
     def __init__(self, **kwargs):
         super().__init__("html", **kwargs)
 
-class Head(BaseElement):
+class Head(Element):
+    """Container for metadata and document head elements"""
     def __init__(self, **kwargs):
         super().__init__("head", **kwargs)
 
-class Body(BaseElement):
+class Body(Element):
+    """Container for the document's content"""
     def __init__(self, **kwargs):
         super().__init__("body", **kwargs)
 
-class Header(BaseElement):
+class Header(Element):
+    """Introductory content or navigation links"""
     def __init__(self, **kwargs):
         super().__init__("header", **kwargs)
 
-class Footer(BaseElement):
+class Footer(Element):
+    """Footer content for its nearest sectioning content"""
     def __init__(self, **kwargs):
         super().__init__("footer", **kwargs)
 
-class Section(BaseElement):
+class Section(Element):
+    """Standalone section of content"""
     def __init__(self, **kwargs):
         super().__init__("section", **kwargs)
 
-class Article(BaseElement):
+class Article(Element):
+    """Self-contained composition"""
     def __init__(self, **kwargs):
         super().__init__("article", **kwargs)
 
-class Aside(BaseElement):
+class Aside(Element):
+    """Content indirectly related to main content"""
     def __init__(self, **kwargs):
         super().__init__("aside", **kwargs)
 
-class Nav(BaseElement):
+class Nav(Element):
+    """Navigation links section"""
     def __init__(self, **kwargs):
         super().__init__("nav", **kwargs)
 
-class Div(BaseElement):
+class Div(Element):
+    """Generic container for flow content"""
     def __init__(self, **kwargs):
         super().__init__("div", **kwargs)
 
-class Span(BaseElement):
+class Span(Element):
+    """Generic inline container"""
     def __init__(self, **kwargs):
         super().__init__("span", **kwargs)
 
-class Main(BaseElement):
+class Main(Element):
+    """Main content of the document"""
     def __init__(self, **kwargs):
         super().__init__("main", **kwargs)
 
 # Text Elements
-class H1(BaseElement):
+class H1(Element):
+    """First-level heading"""
     def __init__(self, **kwargs):
         super().__init__("h1", **kwargs)
 
-class H2(BaseElement):
+class H2(Element):
+    """Second-level heading"""
     def __init__(self, **kwargs):
         super().__init__("h2", **kwargs)
 
-class H3(BaseElement):
+class H3(Element):
+    """Third-level heading"""
     def __init__(self, **kwargs):
         super().__init__("h3", **kwargs)
 
-class H4(BaseElement):
+class H4(Element):
+    """Fourth-level heading"""
     def __init__(self, **kwargs):
         super().__init__("h4", **kwargs)
 
-class H5(BaseElement):
+class H5(Element):
+    """Fifth-level heading"""
     def __init__(self, **kwargs):
         super().__init__("h5", **kwargs)
 
-class H6(BaseElement):
+class H6(Element):
+    """Sixth-level heading"""
     def __init__(self, **kwargs):
         super().__init__("h6", **kwargs)
 
-class P(BaseElement):
+class P(Element):
+    """Paragraph of text"""
     def __init__(self, **kwargs):
         super().__init__("p", **kwargs)
 
-class Blockquote(BaseElement):
+class Blockquote(Element):
+    """Extended quotation"""
     def __init__(self, **kwargs):
         super().__init__("blockquote", **kwargs)
 
-class Pre(BaseElement):
+class Pre(Element):
+    """Preformatted text"""
     def __init__(self, **kwargs):
         super().__init__("pre", **kwargs)
 
-class Hr(BaseElement):
+class Hr(Element):
+    """Thematic break between paragraphs"""
     def __init__(self, **kwargs):
         super().__init__("hr", **kwargs)
 
-class Code(BaseElement):
+class Code(Element):
+    """Computer code"""
     def __init__(self, **kwargs):
         super().__init__("code", **kwargs)
 
-class Em(BaseElement):
+class Em(Element):
+    """Emphasized text"""
     def __init__(self, **kwargs):
         super().__init__("em", **kwargs)
 
-class Strong(BaseElement):
+class Strong(Element):
+    """Strong importance"""
     def __init__(self, **kwargs):
         super().__init__("strong", **kwargs)
 
-class Small(BaseElement):
+class Small(Element):
+    """Side-comments and small print"""
     def __init__(self, **kwargs):
         super().__init__("small", **kwargs)
 
-class S(BaseElement):
+class S(Element):
+    """Strikethrough text"""
     def __init__(self, **kwargs):
         super().__init__("s", **kwargs)
 
-class Sub(BaseElement):
+class Sub(Element):
+    """Subscript text"""
     def __init__(self, **kwargs):
         super().__init__("sub", **kwargs)
 
-class Sup(BaseElement):
+class Sup(Element):
+    """Superscript text"""
     def __init__(self, **kwargs):
         super().__init__("sup", **kwargs)
 
 # Lists
-class Ul(BaseElement):
+class Ul(Element):
+    """Unordered list"""
     def __init__(self, **kwargs):
         super().__init__("ul", **kwargs)
 
-class Ol(BaseElement):
+class Ol(Element):
+    """Ordered list"""
     def __init__(self, **kwargs):
         super().__init__("ol", **kwargs)
 
-class Li(BaseElement):
+class Li(Element):
+    """List item"""
     def __init__(self, **kwargs):
         super().__init__("li", **kwargs)
 
-class Dl(BaseElement):
+class Dl(Element):
+    """Description list"""
     def __init__(self, **kwargs):
         super().__init__("dl", **kwargs)
 
-class Dt(BaseElement):
+class Dt(Element):
+    """Description term"""
     def __init__(self, **kwargs):
         super().__init__("dt", **kwargs)
 
-class Dd(BaseElement):
+class Dd(Element):
+    """Description details"""
     def __init__(self, **kwargs):
         super().__init__("dd", **kwargs)
 
 # Tables
-class Table(BaseElement):
+class Table(Element):
+    """Table container"""
     def __init__(self, **kwargs):
         super().__init__("table", **kwargs)
 
-class Tr(BaseElement):
+class Tr(Element):
+    """Table row"""
     def __init__(self, **kwargs):
         super().__init__("tr", **kwargs)
 
-class Th(BaseElement):
+class Th(Element):
+    """Table header cell"""
     def __init__(self, **kwargs):
         super().__init__("th", **kwargs)
 
-class Td(BaseElement):
+class Td(Element):
+    """Table data cell"""
     def __init__(self, **kwargs):
         super().__init__("td", **kwargs)
 
-class Thead(BaseElement):
+class Thead(Element):
+    """Table head"""
     def __init__(self, **kwargs):
         super().__init__("thead", **kwargs)
 
-class Tbody(BaseElement):
+class Tbody(Element):
+    """Table body"""
     def __init__(self, **kwargs):
         super().__init__("tbody", **kwargs)
 
-class Tfoot(BaseElement):
+class Tfoot(Element):
+    """Table footer"""
     def __init__(self, **kwargs):
         super().__init__("tfoot", **kwargs)
 
-class Col(BaseElement):
+class Col(Element):
+    """Table column"""
     def __init__(self, **kwargs):
         super().__init__("col", **kwargs)
 
-class Colgroup(BaseElement):
+class Colgroup(Element):
+    """Table column group"""
     def __init__(self, **kwargs):
         super().__init__("colgroup", **kwargs)
 
 # Forms
-class Form(BaseElement):
+class Form(Element):
+    """Form container"""
     def __init__(self, **kwargs):
         super().__init__("form", **kwargs)
 
-class Input(BaseElement):
+class Input(Element):
+    """Input control"""
     def __init__(self, **kwargs):
         super().__init__("input", **kwargs)
 
-class Textarea(BaseElement):
+class Textarea(Element):
+    """Multiline text input"""
     def __init__(self, **kwargs):
         super().__init__("textarea", **kwargs)
 
-class Button(BaseElement):
+class Button(Element):
+    """Clickable button"""
     def __init__(self, **kwargs):
         super().__init__("button", **kwargs)
 
-class Select(BaseElement):
+class Select(Element):
+    """Dropdown list"""
     def __init__(self, **kwargs):
         super().__init__("select", **kwargs)
 
-class Option(BaseElement):
+class Option(Element):
+    """Option in a select element"""
     def __init__(self, **kwargs):
         super().__init__("option", **kwargs)
 
-class Label(BaseElement):
+class Label(Element):
+    """Label for a form control"""
     def __init__(self, **kwargs):
         super().__init__("label", **kwargs)
-
-# Media
-class Audio(BaseElement):
-    def __init__(self, src: str, controls: bool = False, **kwargs):
-        super().__init__("audio", src=src, controls=controls, **kwargs)
-
-class Video(BaseElement):
-    def __init__(self, src: str, controls: bool = False, **kwargs):
-        super().__init__("video", src=src, controls=controls, **kwargs)
-
-class Iframe(BaseElement):
-    def __init__(self, src: str, width: Optional[str] = None, height: Optional[str] = None, **kwargs):
-        super().__init__("iframe", src=src, width=width, height=height, **kwargs)
-
-class Img(BaseElement):
-    def __init__(self, src: str, alt: str, **kwargs):
-        super().__init__("img", src=src, alt=alt, **kwargs)
-
-class Source(BaseElement):
-    def __init__(self, src: str, type: str, **kwargs):
-        super().__init__("source", src=src, type=type, **kwargs)
-
-class Track(BaseElement):
-    def __init__(self, src: str, kind: str = "subtitles", srclang: str = "en", label: str = "", **kwargs):
-        super().__init__("track", src=src, kind=kind, srclang=srclang, label=label, **kwargs)
